@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tourist Guide Application</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f9;
+            color: #222;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 26px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
+        }
+
+        .hero {
+            min-height: 430px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+
+            background:
+                linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+                url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80");
+
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 750px;
+        }
+
+        .hero h2 {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box button {
+            background: #0077b6;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        section {
+            padding: 50px 8%;
+        }
+
+        section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #0077b6;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,.1);
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            color: #023e8a;
+            margin-bottom: 10px;
+        }
+
+        .card-content p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .rating {
+            color: #f4a261;
+            margin: 10px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 15px;
+            background: #0077b6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .api-result {
+            max-width: 800px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.1);
+        }
+
+        .api-result img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .weather {
+            text-align: center;
+            background: #caf0f8;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .map {
+            width: 100%;
+            height: 350px;
+            border: 0;
+            border-radius: 12px;
+        }
+
+        footer {
+            background: #023e8a;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media(max-width: 700px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero h2 {
+                font-size: 32px;
+            }
+
+            .search-box {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .search-box button {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header>
+    <h1>🌍 Tourist Guide</h1>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#places">Places</a>
+        <a href="#weather">Weather</a>
+        <a href="#map">Map</a>
+    </nav>
+</header>
+
+
+<!-- HERO -->
+<section class="hero" id="home">
+
+    <div class="hero-content">
+
+        <h2>Explore Beautiful Places</h2>
+
+        <p>
+            Discover tourist destinations, attractions, weather
+            and locations using APIs.
+        </p>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="destination"
+                placeholder="Enter destination e.g. Paris"
+            >
+
+            <button onclick="searchDestination()">
+                Search
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- API SEARCH RESULT -->
+<section>
+
+    <h2>Destination Information</h2>
+
+    <div id="result" class="api-result">
+
+        <p style="text-align:center;">
+            Search for a destination to see information and images.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- POPULAR PLACES -->
+<section id="places">
+
+    <h2>Popular Tourist Places</h2>
+
+    <div class="cards">
+
+        <!-- India -->
+        <div class="card">
+
+            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80">
+
+            <div class="card-content">
+
+                <h3>🇮🇳 Taj Mahal</h3>
+
+                <div class="rating">★★★★★</div>
+
+                <p>
+                    The Taj Mahal is one of India's most famous
+                    historical monuments located in Agra.
+                </p>
+
+                <a
+                    class="btn"
+                    href="https://www.google.com/maps/search/?api=1&query=Taj+Mahal"
+                    target="_blank">
+                    View Map
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Paris -->
+        <div class="card">
+
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80">
+
+            <div class="card-content">
+
+                <h3>🇫🇷 Paris</h3>
+
+                <div class="rating">★★★★★</div>
+
+                <p>
+                    Explore the Eiffel Tower, Louvre Museum and
+                    beautiful streets of Paris.
+                </p>
+
+                <a
+                    class="btn"
+                    href="https://www.google.com/maps/search/?api=1&query=Eiffel+Tower"
+                    target="_blank">
+                    View Map
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Dubai -->
+        <div class="card">
+
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80">
+
+            <div class="card-content">
+
+                <h3>🇦🇪 Dubai</h3>
+
+                <div class="rating">★★★★★</div>
+
+                <p>
+                    Experience Burj Khalifa, Dubai Marina,
+                    desert safaris and luxury shopping.
+                </p>
+
+                <a
+                    class="btn"
+                    href="https://www.google.com/maps/search/?api=1&query=Burj+Khalifa"
+                    target="_blank">
+                    View Map
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- London -->
+        <div class="card">
+
+            <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80">
+
+            <div class="card-content">
+
+                <h3>🇬🇧 London</h3>
+
+                <div class="rating">★★★★★</div>
+
+                <p>
+                    Visit Big Ben, London Eye, Tower Bridge
+                    and Buckingham Palace.
+                </p>
+
+                <a
+                    class="btn"
+                    href="https://www.google.com/maps/search/?api=1&query=Big+Ben+London"
+                    target="_blank">
+                    View Map
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- WEATHER -->
+<section id="weather">
+
+    <h2>🌤️ Destination Weather</h2>
+
+    <div class="weather">
+
+        <h3 id="weatherCity">
+            Search a destination
+        </h3>
+
+        <p id="weatherInfo">
+            Weather information will appear here.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- GOOGLE MAP -->
+<section id="map">
+
+    <h2>🗺️ Explore on Map</h2>
+
+    <iframe
+        class="map"
+        id="mapFrame"
+        src="https://www.google.com/maps?q=India&output=embed">
+    </iframe>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <p>
+        © 2026 Tourist Guide Application
+    </p>
+
+    <p>
+        College Project | HTML | CSS | JavaScript | APIs
+    </p>
+
+</footer>
+
+
+<script>
+
+    /*
+       ==========================================
+       API CONFIGURATION
+       ==========================================
+
+       Add your OpenWeather API key below.
+
+       Example:
+
+       const WEATHER_API_KEY = "YOUR_API_KEY";
+
+       Get an API key from OpenWeather.
+    */
+
+    const WEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY";
+
+
+    /*
+       ==========================================
+       SEARCH DESTINATION
+       ==========================================
+    */
+
+    async function searchDestination() {
+
+        const city =
+            document.getElementById("destination")
+            .value
+            .trim();
+
+        if (city === "") {
+
+            alert("Please enter a destination.");
+
+            return;
+        }
+
+
+        const result =
+            document.getElementById("result");
+
+
+        result.innerHTML = `
+            <h3>Searching for ${city}...</h3>
+        `;
+
+
+        /*
+           UNSPLASH SOURCE IMAGE
+
+           This creates a destination image
+           without requiring an API key.
+        */
+
+        const imageURL =
+            `https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=80`;
+
+
+        /*
+           DISPLAY DESTINATION
+        */
+
+        result.innerHTML = `
+
+            <img src="${imageURL}"
+                 alt="${city}">
+
+            <h2>${city}</h2>
+
+            <p>
+                Welcome to ${city}! Explore famous tourist
+                attractions, local culture, food and beautiful
+                destinations.
+            </p>
+
+            <br>
+
+            <button
+                class="btn"
+                onclick="openGoogleMaps('${city}')">
+
+                🗺️ Explore ${city} on Google Maps
+
+            </button>
+
+        `;
+
+
+        /*
+           WEATHER
+        */
+
+        getWeather(city);
+
+    }
+
+
+    /*
+       ==========================================
+       OPEN GOOGLE MAPS
+       ==========================================
+    */
+
+    function openGoogleMaps(city) {
+
+        const url =
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(city)}`;
+
+        window.open(url, "_blank");
+
+        /*
+           Also update embedded map.
+        */
+
+        document.getElementById("mapFrame").src =
+            `https://www.google.com/maps?q=${encodeURIComponent(city)}&output=embed`;
+
+    }
+
+
+    /*
+       ==========================================
+       WEATHER API
+       ==========================================
+    */
+
+    async function getWeather(city) {
+
+        const cityElement =
+            document.getElementById("weatherCity");
+
+        const weatherElement =
+            document.getElementById("weatherInfo");
+
+
+        cityElement.innerText =
+            `Weather in ${city}`;
+
+
+        if (WEATHER_API_KEY === "YOUR_OPENWEATHER_API_KEY") {
+
+            weatherElement.innerHTML = `
+                <p>
+                    Add your OpenWeather API key in the
+                    JavaScript code to display live weather.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${WEATHER_API_KEY}&units=metric`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error("Weather not found");
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            weatherElement.innerHTML = `
+
+                <h2>
+                    ${data.main.temp}°C
+                </h2>
+
+                <p>
+                    🌡️ Feels like:
+                    ${data.main.feels_like}°C
+                </p>
+
+                <p>
+                    💧 Humidity:
+                    ${data.main.humidity}%
+                </p>
+
+                <p>
+                    🌥️ Condition:
+                    ${data.weather[0].description}
+                </p>
+
+                <p>
+                    💨 Wind:
+                    ${data.wind.speed} m/s
+                </p>
+
+            `;
+
+        }
+
+        catch(error) {
+
+            weatherElement.innerHTML = `
+                <p>
+                    Unable to load weather information.
+                    Please check the city name or API key.
+                </p>
+            `;
+
+        }
+
+    }
+
+
+    /*
+       ==========================================
+       ENTER KEY SEARCH
+       ==========================================
+    */
+
+    document
+        .getElementById("destination")
+        .addEventListener("keypress", function(event) {
+
+            if (event.key === "Enter") {
+
+                searchDestination();
+
+            }
+
+        });
+
+</script>
+
+</body>
+</html>
